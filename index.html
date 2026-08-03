@@ -60,6 +60,12 @@
     font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;margin-top:22px}
   .btn:active{filter:brightness(.94)}
   .btn:disabled{opacity:.6;cursor:default}
+  /* Secundário com o mesmo tamanho do principal e bem afastado: um "Cancelar"
+     pequeno encostado no "Usar esta foto" convida ao toque errado. */
+  .btn-sec{width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);
+    border-radius:12px;padding:15px;font-family:inherit;font-size:16px;font-weight:600;
+    cursor:pointer;margin-top:14px}
+  .btn-sec:active{border-color:var(--accent)}
   .err-msg{color:var(--err);font-size:13px;margin-top:8px;font-weight:600;display:none}
   .note{margin-top:18px;font-size:12.5px;color:var(--muted);line-height:1.55;text-align:center}
   .done,.bloqueio{display:none;text-align:center;padding:14px 4px}
@@ -191,7 +197,7 @@
     </div>
     <input type="range" id="zoom" min="1" max="5" step="0.01" value="1">
     <button class="btn" id="usarFoto" type="button">Usar esta foto</button>
-    <button class="again" id="cancelarFoto" type="button">Cancelar</button>
+    <button class="btn-sec" id="cancelarFoto" type="button">Cancelar</button>
   </div>
 
   <div class="done" id="doneView">
