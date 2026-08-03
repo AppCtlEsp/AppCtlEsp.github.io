@@ -79,13 +79,11 @@
   .recorte-area{position:relative;width:100%;max-width:320px;aspect-ratio:1;margin:0 auto;
     border-radius:16px;overflow:hidden;background:var(--panel2);touch-action:none}
   .recorte-area canvas{width:100%;height:100%;display:block}
-  /* Sombra por fora do círculo, com um anel laranja marcando o recorte. */
-  .recorte-mascara{position:absolute;inset:0;pointer-events:none;border-radius:16px;
-    box-shadow:0 0 0 999px rgba(17,20,15,.72) inset;
-    -webkit-mask:radial-gradient(circle at 50% 50%, transparent 49.6%, #000 49.8%);
-    mask:radial-gradient(circle at 50% 50%, transparent 49.6%, #000 49.8%)}
-  .recorte-area::after{content:"";position:absolute;inset:0;border-radius:50%;
-    border:2px solid var(--accent);pointer-events:none}
+  /* Um círculo só: o mesmo elemento desenha o anel laranja e escurece tudo em
+     volta, com uma sombra larga que a área recorta. Assim é impossível o
+     recorte e a marcação ficarem de tamanhos diferentes. */
+  .recorte-mascara{position:absolute;inset:0;pointer-events:none;border-radius:50%;
+    border:2px solid var(--accent);box-shadow:0 0 0 999px rgba(17,20,15,.72)}
   #zoom{width:100%;max-width:320px;margin:18px auto 4px;display:block;accent-color:var(--accent)}
 </style>
 </head>
