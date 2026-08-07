@@ -192,6 +192,17 @@
       </div>
 
       <div class="field">
+        <label>Aparecer no ranking</label>
+        <div class="seg" id="rankSeg">
+          <button type="button" data-rank="1">Sim</button>
+          <button type="button" data-rank="0">Não</button>
+        </div>
+        <div class="hint">O grupo publica classificação, artilharia e imagens
+          no WhatsApp. Se preferir ficar de fora dessas listas, escolha "Não" —
+          você joga normalmente, só não aparece nelas.</div>
+      </div>
+
+      <div class="field">
         <label>Categoria</label>
         <div class="seg cat" id="catSeg">
           <button type="button" data-cat="mensalista" data-color="--gold">Mensalista</button>
@@ -240,7 +251,8 @@
   const $ = s => document.querySelector(s);
   const token = new URLSearchParams(location.search).get("t") || "";
 
-  let grupoId = null, fotoBlob = null, nota = 3, folego = 3, cat = "mensalista", enviando = false;
+  let grupoId = null, fotoBlob = null, nota = 3, folego = 3, cat = "mensalista",
+      noRanking = true, enviando = false;
 
   const cabecalhos = {
     "apikey": SUPABASE_KEY,
@@ -439,6 +451,18 @@
   document.querySelectorAll("#folegoSeg button").forEach(b =>
     b.addEventListener("click", () => { folego = +b.dataset.folego; pintarFolego(); }));
 
+  function pintarRank(){
+    document.querySelectorAll("#rankSeg button").forEach(b => {
+      const on = (b.dataset.rank === "1") === noRanking;
+      b.classList.toggle("on", on);
+      b.style.background = on ? "var(--accent)" : "";
+      b.style.borderColor = on ? "var(--accent)" : "";
+      b.style.color = on ? "#1a0e05" : "";
+    });
+  }
+  document.querySelectorAll("#rankSeg button").forEach(b =>
+    b.addEventListener("click", () => { noRanking = b.dataset.rank === "1"; pintarRank(); }));
+
   function pintarCat(){
     document.querySelectorAll("#catSeg button")
       .forEach(b => b.classList.toggle("on", b.dataset.cat === cat));
@@ -575,6 +599,7 @@
         p_time_coracao: time,
         p_nota: nota,
         p_folego: folego,
+        p_no_ranking: noRanking,
         p_cat: cat,
         p_foto_url: fotoUrl,
       });
@@ -592,6 +617,7 @@
         ["Time do coração", time || "—"],
         ["Habilidade", nota + " / 5"],
         ["Fôlego", folego + " / 5"],
+        ["Aparecer no ranking", noRanking ? "Sim" : "Não"],
         ["Categoria", catLabel[cat]],
       ];
       $("#resumo").innerHTML = linhas
@@ -609,7 +635,7 @@
     }
   });
 
-  pintarNota(); pintarFolego(); pintarCat(); preencherData(); abrir();
+  pintarNota(); pintarFolego(); pintarRank(); pintarCat(); preencherData(); abrir();
 </script>
 </body>
 </html>
