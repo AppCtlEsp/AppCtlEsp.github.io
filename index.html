@@ -296,7 +296,7 @@
 
   // --------------------------------------------------- a foto (com recorte)
   //
-  // A foto vira o círculo do jogador dentro do app. Uma foto de corpo inteiro
+  // A foto vira o ícone do jogador dentro do app. Uma foto de corpo inteiro
   // fica irreconhecível nesse tamanho, por isso o ajuste acontece aqui, antes
   // de enviar.
   const cv = $("#cvRecorte");
@@ -507,7 +507,7 @@
   // ----------------------------------------------------------------- envio
   /// Pergunta se é para seguir sem foto.
   ///
-  /// A foto vira o círculo do jogador dentro do app: é por ela que o
+  /// A foto vira o ícone do jogador dentro do app: é por ela que o
   /// organizador identifica quem é quem no campo, e sem ela sobra só o apelido
   /// abreviado. Perguntar aqui custa um toque e evita a ficha capenga —
   /// mas continua sendo escolha de quem se cadastra.
@@ -519,7 +519,7 @@
         <div class="folha-corpo">
           <h2>Cadastrar sem foto?</h2>
           <p style="color:var(--muted);font-size:13.5px;line-height:1.5;margin:10px 0 18px">
-            A foto vira o seu círculo dentro do app — é como o pessoal te
+            A foto vira o seu ícone dentro do app — é como o pessoal te
             reconhece na hora de montar os times. Sem ela aparece só o seu
             apelido abreviado.
           </p>
@@ -591,6 +591,7 @@
         ["Idade", idade(nasc) != null ? idade(nasc) + " anos" : "—"],
         ["Time do coração", time || "—"],
         ["Habilidade", nota + " / 5"],
+        ["Fôlego", folego + " / 5"],
         ["Categoria", catLabel[cat]],
       ];
       $("#resumo").innerHTML = linhas
