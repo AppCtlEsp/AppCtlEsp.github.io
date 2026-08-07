@@ -80,6 +80,13 @@
   .resumo .r span:first-child{color:var(--muted)}
   .resumo .r span:last-child{font-weight:600;text-align:right}
   .carregando{text-align:center;color:var(--muted);padding:60px 0;font-size:14px}
+  /* Folha de confirmação: cobre a página inteira e sobe de baixo, como as
+     folhas do app. Só aparece quando há uma pergunta a fazer. */
+  .folha{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;
+    align-items:flex-end;justify-content:center;z-index:50;padding:16px}
+  .folha-corpo{background:var(--panel);border:1px solid var(--line);
+    border-radius:18px 18px 14px 14px;padding:20px 18px 18px;width:100%;max-width:420px}
+  .folha-corpo h2{font-size:20px;font-weight:700}
   .recorte{display:none;text-align:center}
   .recorte h2{font-size:23px;font-weight:700;margin-top:6px}
   .recorte .lead{margin-bottom:18px}
@@ -173,6 +180,18 @@
       </div>
 
       <div class="field">
+        <label>Fôlego (1 a 5)</label>
+        <div class="seg nota" id="folegoSeg">
+          <button type="button" data-folego="1">1</button><button type="button" data-folego="2">2</button>
+          <button type="button" data-folego="3">3</button><button type="button" data-folego="4">4</button>
+          <button type="button" data-folego="5">5</button>
+        </div>
+        <div class="hint">Quanto tempo você aguenta em campo. É diferente de
+          habilidade: dá para jogar muito e cansar cedo, ou correr o jogo
+          inteiro sem ser o mais técnico.</div>
+      </div>
+
+      <div class="field">
         <label>Categoria</label>
         <div class="seg cat" id="catSeg">
           <button type="button" data-cat="mensalista" data-color="--gold">Mensalista</button>
@@ -221,7 +240,7 @@
   const $ = s => document.querySelector(s);
   const token = new URLSearchParams(location.search).get("t") || "";
 
-  let grupoId = null, fotoBlob = null, nota = 3, cat = "mensalista", enviando = false;
+  let grupoId = null, fotoBlob = null, nota = 3, folego = 3, cat = "mensalista", enviando = false;
 
   const cabecalhos = {
     "apikey": SUPABASE_KEY,
@@ -413,6 +432,13 @@
   document.querySelectorAll("#notaSeg button").forEach(b =>
     b.addEventListener("click", () => { nota = +b.dataset.nota; pintarNota(); }));
 
+  function pintarFolego(){
+    document.querySelectorAll("#folegoSeg button")
+      .forEach(b => b.classList.toggle("on", +b.dataset.folego === folego));
+  }
+  document.querySelectorAll("#folegoSeg button").forEach(b =>
+    b.addEventListener("click", () => { folego = +b.dataset.folego; pintarFolego(); }));
+
   function pintarCat(){
     document.querySelectorAll("#catSeg button")
       .forEach(b => b.classList.toggle("on", b.dataset.cat === cat));
@@ -479,6 +505,37 @@
   }
 
   // ----------------------------------------------------------------- envio
+  /// Pergunta se é para seguir sem foto.
+  ///
+  /// A foto vira o círculo do jogador dentro do app: é por ela que o
+  /// organizador identifica quem é quem no campo, e sem ela sobra só o apelido
+  /// abreviado. Perguntar aqui custa um toque e evita a ficha capenga —
+  /// mas continua sendo escolha de quem se cadastra.
+  function confirmarSemFoto(){
+    return new Promise(resolve => {
+      const fundo = document.createElement("div");
+      fundo.className = "folha";
+      fundo.innerHTML = `
+        <div class="folha-corpo">
+          <h2>Cadastrar sem foto?</h2>
+          <p style="color:var(--muted);font-size:13.5px;line-height:1.5;margin:10px 0 18px">
+            A foto vira o seu círculo dentro do app — é como o pessoal te
+            reconhece na hora de montar os times. Sem ela aparece só o seu
+            apelido abreviado.
+          </p>
+          <button class="btn" type="button" data-r="foto">Escolher foto</button>
+          <button class="btn-sec" type="button" data-r="sem">Continuar sem foto</button>
+        </div>`;
+      document.body.appendChild(fundo);
+      fundo.addEventListener("click", e => {
+        const r = e.target.dataset && e.target.dataset.r;
+        if(!r) return;
+        fundo.remove();
+        resolve(r);
+      });
+    });
+  }
+
   $("#enviar").addEventListener("click", async () => {
     if(enviando) return;
 
@@ -491,6 +548,11 @@
     }
     $("#errNome").style.display = "none";
     $("#errEnvio").style.display = "none";
+
+    if(!fotoBlob){
+      const escolha = await confirmarSemFoto();
+      if(escolha === "foto"){ $("#pickPhoto").click(); return; }
+    }
 
     const apelido = $("#fApelido").value.trim() || autoApelido(nome);
     const pos     = $("#fPos").value || "Polivalente";
@@ -512,6 +574,7 @@
         p_pos: pos,
         p_time_coracao: time,
         p_nota: nota,
+        p_folego: folego,
         p_cat: cat,
         p_foto_url: fotoUrl,
       });
@@ -545,7 +608,7 @@
     }
   });
 
-  pintarNota(); pintarCat(); preencherData(); abrir();
+  pintarNota(); pintarFolego(); pintarCat(); preencherData(); abrir();
 </script>
 </body>
 </html>
