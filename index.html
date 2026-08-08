@@ -40,6 +40,9 @@
   input::placeholder{color:#5c6f61}
   select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238f9684' d='M6 8 0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
   .hint{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.4}
+  /* Sugestão, não regra: vermelho para pedir o olho, sem virar mensagem de
+     erro — por isso fica na mesma família de texto pequeno das outras dicas. */
+  .hint.destaque{color:var(--err);margin-top:5px}
   .photo-pick{display:flex;align-items:center;gap:16px}
   /* Fundo claro no círculo: a silhueta é escura, e é o mesmo fundo que a
      orientação pede para a foto. */
@@ -130,6 +133,8 @@
             <button class="ghost-btn" id="pickPhoto" type="button">Escolher foto</button>
             <input type="file" id="fileInput" accept="image/*" style="display:none">
             <div class="hint">Foto do rosto (cabeça) com fundo claro</div>
+            <div class="hint destaque">Sugere-se usar uma foto com a camisa do
+              seu time do coração.</div>
           </div>
         </div>
       </div>
